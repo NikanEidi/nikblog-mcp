@@ -61,7 +61,8 @@ Then asked it for one specific project's details by slug (`ledgerlite`) — got 
 - [`00-what-is-mcp.md`](notes/00-what-is-mcp.md) — what MCP is, the building blocks, and building the first tool
 - [`01-second-tool-get-my-notes.md`](notes/01-second-tool-get-my-notes.md) — adding a second no-argument tool
 - [`02-tool-with-a-parameter.md`](notes/02-tool-with-a-parameter.md) — a tool that takes an argument, and how the schema gets built
+- [`03-error-handling.md`](notes/03-error-handling.md) — handling a bad slug vs. the API being unreachable, with a timeout and try/except on every tool
 
 ## Next steps
 
-- Error handling: right now none of the three tools handle a bad input (e.g. a slug that doesn't exist) or the API being down.
+- Deploy this as a real hosted server (HTTP/streamable-http transport) instead of only running locally over stdio.
