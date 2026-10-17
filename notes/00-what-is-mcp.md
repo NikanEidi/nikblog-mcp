@@ -74,19 +74,3 @@ Asked Claude Code "use nikblog tool to list my projects" and got back my real, l
 ![get_my_projects tool call](../assets/get-my-projects-call.png)
 
 This is a genuinely callable MCP tool, reachable by any MCP-compatible client, not a script only I can run.
-
-## A second tool: get_my_notes
-
-I added a second tool myself, the same shape as the first, pointed at `GET /notes` instead:
-
-```python
-@mcp.tool()
-def get_my_notes() -> str:
-    """Get Nikan's list of software notes from his live portfolio."""
-    response = requests.get("https://nik-blog.onrender.com/notes")
-    return response.text
-```
-
-Asked Claude Code to list my notes and it correctly pulled all 25, grouped by category, straight from the live site:
-
-![get_my_notes tool call](../assets/get-my-notes-call.png)

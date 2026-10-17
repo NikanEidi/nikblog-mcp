@@ -7,8 +7,9 @@ A real MCP (Model Context Protocol) server, built to close a gap I kept having t
 Exposes my live portfolio ([nik-blog](https://github.com/NikanEidi/nik-blog)) as tools any MCP-compatible client can call:
 - `get_my_projects` — pulls my real project list from `GET /projects`
 - `get_my_notes` — pulls my real notes list from `GET /notes`
+- `get_project_by_slug(slug)` — pulls one project's full detail from `GET /projects/{slug}`
 
-No fake data, no mocked response — both hit my actual deployed API.
+No fake data, no mocked response — all three hit my actual deployed API.
 
 ## How it's different from what I'd already built
 
@@ -51,10 +52,16 @@ Then asked it to list my notes — got back all 25, correctly grouped by categor
 
 ![get_my_notes tool call](assets/get-my-notes-call.png)
 
+Then asked it for one specific project's details by slug (`ledgerlite`) — got back the real record, not a guess:
+
+![get_project_by_slug tool call](assets/get-project-by-slug-call.png)
+
 ## Notes
 
-Full write-up of what MCP is and how this was built: [`notes/00-what-is-mcp.md`](notes/00-what-is-mcp.md).
+- [`00-what-is-mcp.md`](notes/00-what-is-mcp.md) — what MCP is, the building blocks, and building the first tool
+- [`01-second-tool-get-my-notes.md`](notes/01-second-tool-get-my-notes.md) — adding a second no-argument tool
+- [`02-tool-with-a-parameter.md`](notes/02-tool-with-a-parameter.md) — a tool that takes an argument, and how the schema gets built
 
 ## Next steps
 
-- Maybe a `get_project_by_slug` tool with a parameter, to learn how MCP handles tool arguments/schemas beyond a no-arg call.
+- Error handling: right now none of the three tools handle a bad input (e.g. a slug that doesn't exist) or the API being down.
