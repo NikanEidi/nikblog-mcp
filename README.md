@@ -2,6 +2,8 @@
 
 A real MCP (Model Context Protocol) server, built to close a gap I kept having to disclaim on résumés: SkillSet and my career-assistant system are Claude Skills and prompt-orchestration, not an actual implementation of MCP. This is the real thing. Started 2026-10-17.
 
+**Live:** deployed on Render at [nikblog-mcp.onrender.com](https://nikblog-mcp.onrender.com) (streamable-http), reachable by any MCP-compatible client — not just locally.
+
 ## What it does
 
 Exposes my live portfolio ([nik-blog](https://github.com/NikanEidi/nik-blog)) as tools any MCP-compatible client can call:
@@ -31,10 +33,16 @@ pip install "mcp[cli]" requests
 python3 server.py
 ```
 
-Connect it to Claude Code:
+Connect it to Claude Code locally (stdio):
 
 ```bash
 claude mcp add --transport stdio nikblog -- /path/to/venv/bin/python /path/to/server.py
+```
+
+Or connect to the deployed, remote version — no local Python needed:
+
+```bash
+claude mcp add --transport http nikblog-remote https://nikblog-mcp.onrender.com/mcp
 ```
 
 ## Real bugs hit along the way
@@ -56,13 +64,18 @@ Then asked it for one specific project's details by slug (`ledgerlite`) — got 
 
 ![get_project_by_slug tool call](assets/get-project-by-slug-call.png)
 
+Then deployed it to Render and connected a second, remote instance (`nikblog-remote`) — both the local and remote servers show up connected side by side:
+
+![nikblog-remote connected](assets/remote-mcp-connected.png)
+
+And the remote one actually works, over the real network, not just locally:
+
+![Remote tool call working](assets/remote-tool-call.png)
+
 ## Notes
 
 - [`00-what-is-mcp.md`](notes/00-what-is-mcp.md) — what MCP is, the building blocks, and building the first tool
 - [`01-second-tool-get-my-notes.md`](notes/01-second-tool-get-my-notes.md) — adding a second no-argument tool
 - [`02-tool-with-a-parameter.md`](notes/02-tool-with-a-parameter.md) — a tool that takes an argument, and how the schema gets built
 - [`03-error-handling.md`](notes/03-error-handling.md) — handling a bad slug vs. the API being unreachable, with a timeout and try/except on every tool
-
-## Next steps
-
-- Deploy this as a real hosted server (HTTP/streamable-http transport) instead of only running locally over stdio.
+- [`04-deploy-remote-http.md`](notes/04-deploy-remote-http.md) — switching to streamable-http and deploying on Render
