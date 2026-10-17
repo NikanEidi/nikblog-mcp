@@ -1,5 +1,6 @@
 from mcp.server.mcpserver import MCPServer
 import requests
+import os
 
 mcp = MCPServer("nikblog")
 
@@ -31,4 +32,8 @@ def get_project_by_slug(slug: str) -> str:
  
 
 if __name__ == "__main__":
-    mcp.run()
+    port = os.environ.get("PORT")
+    if port:
+        mcp.run(transport="streamable-http", host="0.0.0.0", port=int(port))
+    else:
+        mcp.run()
