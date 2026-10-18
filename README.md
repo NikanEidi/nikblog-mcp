@@ -48,6 +48,7 @@ claude mcp add --transport http nikblog-remote https://nikblog-mcp.onrender.com/
 ## Real bugs hit along the way
 
 - The installed SDK was `mcp` 2.3.0, a newer major version than the tutorials out there assume. `FastMCP` was renamed to `MCPServer` (now imported from `mcp.server.mcpserver`) in v2 — the original `from mcp.server.fastmcp import FastMCP` import raised a `ModuleNotFoundError` with a migration link right in the error message. Fixed by reading the actual migration guide and inspecting the installed package directly (`inspect.signature`) instead of trusting possibly-outdated docs — the decorators (`@mcp.tool()`, `.run()`) stayed identical, only the class name and import path changed.
+- Wiring up auth: defined `StaticTokenVerifier()` as an argument to `MCPServer(...)` before the class itself was defined further down the file — a `NameError` since Python resolves names top to bottom. Moving the class above fixed it. Separately, leaving out `AuthSettings.validate_token_resource` threw a real `MCPDeprecationWarning` about a behavior change coming in SDK 3.0 — set it explicitly instead of letting a future upgrade silently change what gets accepted.
 
 
 ## Verified working
@@ -72,6 +73,10 @@ And the remote one actually works, over the real network, not just locally:
 
 ![Remote tool call working](assets/remote-tool-call.png)
 
+Then added real bearer-token authentication (a `TokenVerifier` checking a shared secret with `secrets.compare_digest`) so the deployed server isn't wide open — verified a request with no token or the wrong token gets `401`, and a request with the correct token passes the auth check and reaches the real server:
+
+![nikblog-remote tool call after adding auth](assets/auth-remote-tool-call.png)
+
 ## Notes
 
 - [`00-what-is-mcp.md`](notes/00-what-is-mcp.md) — what MCP is, the building blocks, and building the first tool
@@ -79,3 +84,4 @@ And the remote one actually works, over the real network, not just locally:
 - [`02-tool-with-a-parameter.md`](notes/02-tool-with-a-parameter.md) — a tool that takes an argument, and how the schema gets built
 - [`03-error-handling.md`](notes/03-error-handling.md) — handling a bad slug vs. the API being unreachable, with a timeout and try/except on every tool
 - [`04-deploy-remote-http.md`](notes/04-deploy-remote-http.md) — switching to streamable-http and deploying on Render
+- [`05-authentication.md`](notes/05-authentication.md) — real bearer-token auth with a `TokenVerifier`, a timing-attack-safe comparison, and a deprecation warning caught by actually running the server
